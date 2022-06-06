@@ -3,20 +3,21 @@
 #include <stdio.h> 
 #include <string.h> 
 
-#include "md5.h"
 #include "SHA1.h"
+#include "hmac_md5.h"
+
+
 
 int main(int argc,char **argv)  
 {  
     unsigned char * buf;
     unsigned char digest[20]={0};
-	
-    MD5_CTX md5c;
+    char   * key = "711ab370231392679fe06523b119a8fe096f5ed9bd206b4de8d7b5b994bbc3e5";
 
+    MD5_CTX md5c;
     MD5Init(&md5c);
 
     SHA1Context sha;
-
     SHA1Reset(&sha);
 
     if(strcmp(argv[1],"-d") == 0) 
@@ -46,6 +47,13 @@ int main(int argc,char **argv)
 		printf("%02x",*(digest+i));
 	}
 	printf("\n");
+ 
+	hmac_md5(digest, (unsigned char *)(argv[1]) , len, (unsigned char *)key , strlen(key));
+	int i;
+	for ( i = 0; i < 16; i++)
+	{
+		printf("%02x", *(digest+i));
+	}
 
     }
  

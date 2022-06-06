@@ -8,7 +8,8 @@ unsigned char *base64_encode(unsigned char *str)
     unsigned char *res;  
     int i,j;  
 //定义base64编码表  
-    unsigned char *base64_table="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";  
+//    unsigned char *base64_table="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";  
+    unsigned char *base64_table="LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";  
   
 //计算经过base64编码后的字符串长度  
     str_len=strlen(str);  
