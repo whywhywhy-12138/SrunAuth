@@ -5,8 +5,10 @@
 
 
 int ordat(char * msg , int idx){
-	if(strlen(msg) > idx)
-		return (int)msg[idx];
+	if(strlen(msg) > idx){
+		printf("%c ",*(msg+idx));
+		return (int)*(msg+idx);
+	}
 	return 0;
 }
 
@@ -15,7 +17,7 @@ int sencode(char *msg,int key,int *res){
 	int i,j;
 	for(i = 0 ,j = 0 ; i < l ; i+=4,j++){
 		res[j] = ordat(msg,i) | ordat(msg,i+1) << 8| ordat(msg , i+2) << 16| ordat(msg,i+3) << 24;
-		printf("%d\n",res[j]);
+		printf("%d %d %d %d %d\n",ordat(msg,i),ordat(msg,i+1) << 8,ordat(msg , i+2) << 16,ordat(msg,i+3) << 24,res[j]);
 	}
 	if(key)
 		res[j]=l;
@@ -96,7 +98,7 @@ int get_xencode(char * msg, char * key,char * res){
 
 int main(){
 
-	char * msg="{'username':'201626203044@cmcc','password':'15879684798qq','ip':'10.128.96.249','acid':'1','enc_ver':'srun_bx1'}";
+	char * msg="{\"username\":\"201626203044@cmcc\",\"password\":\"15879684798qq\",\"ip\":\"10.128.96.249\",\"acid\":\"1\",\"enc_ver\":\"srun_bx1\"}";
 	char * key="e6843f26b8544327a3a25978dd3c5f89e6b745df1732993b88fe082c13a34cb9";
 
 	char res[256] = {0};
