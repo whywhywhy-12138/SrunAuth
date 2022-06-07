@@ -23,10 +23,10 @@ int sencode(char *msg,int key,unsigned long int *res){
 	return j;
 }
 
-int lencode(int * msg,int l,int key,char *res){
-	int ll = (l - 1) << 2;
+int lencode(unsigned long int * msg,int l,int key,char *res){
+	unsigned long int ll = (l - 1) << 2;
 	if(key){
-		int m = msg[l - 1];
+		unsigned long int m = msg[l - 1];
 		if(m < (ll - 3) || m > ll)
 			return 0;
 		ll = m;
@@ -34,13 +34,13 @@ int lencode(int * msg,int l,int key,char *res){
 	int i;	
 	char tmp[5]= {0};
 	for(i = 0 ; i < l ; i++){
-		sprintf(tmp,"%c%c%c%c",(msg[i]&0xff) ,(msg[i] >> 8 & 0xff ) , (msg[i] >> 16 & 0xff) ,(msg[i] >> 24 & 0xff));
+		sprintf(tmp,"%c%c%c%c",(msg[i] & 0xff) ,(msg[i] >> 8 & 0xff ) , (msg[i] >> 16 & 0xff) ,(msg[i] >> 24 & 0xff));
 		strcat(res , (const char *)tmp);
 	}
 	return i;
 }
 
-int get_xencode(char * msg, char * key,char * res){
+int get_xencode(char * msg, char * key,unsigned char * res){
 	if(strlen(msg)==0)
 		return 0;
 
@@ -58,11 +58,11 @@ int get_xencode(char * msg, char * key,char * res){
 	unsigned long int z = pwd[n];
 	unsigned long int y = pwd[0];
 //	printf("y:%d\n",y);
-	int c = 0x86014019 | 0x183639A0;
+	unsigned long int c = 0x86014019 | 0x183639A0;
 	unsigned long int m = 0;
 	unsigned long int e = 0;
 	unsigned long int p = 0;
-	unsigned long int q = (int)floor(6+52/(n-1));
+	unsigned long int q = (unsigned long int)floor(6+52/(n-1));
 	unsigned long int d = 0;
 
 	while(0 < q){
@@ -102,11 +102,17 @@ int main(){
 	char * msg="{\"username\":\"201626203044@cmcc\",\"password\":\"15879684798qq\",\"ip\":\"10.128.96.249\",\"acid\":\"1\",\"enc_ver\":\"srun_bx1\"}";
 	char * key="e6843f26b8544327a3a25978dd3c5f89e6b745df1732993b88fe082c13a34cb9";
 
-	char res[256] = {0};
+	unsigned char res[256] = {0};
 
 	get_xencode(msg , key ,res);
 
 //	printf("%d\n",ordat(msg,2));
 	printf("%s\n",res);
+	for(int i =0 ;i < 256 ; i++){
+		printf("%x\t",res[i]);
+		if(i % 16 == 0){
+			printf("\n");
+		}
+	}
 	return 0;
 }
