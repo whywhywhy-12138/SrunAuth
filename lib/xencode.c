@@ -4,20 +4,19 @@
 #include <math.h>
 
 
-int ordat(char * msg , int idx){
+unsigned long int ordat(char * msg , int idx){
 	if(strlen(msg) > idx){
-		printf("%c ",*(msg+idx));
-		return (int)*(msg+idx);
+		return (unsigned long int)*(msg+idx);
 	}
 	return 0;
 }
 
-int sencode(char *msg,int key,int *res){
+int sencode(char *msg,int key,unsigned long int *res){
 	int l = strlen(msg);
 	int i,j;
 	for(i = 0 ,j = 0 ; i < l ; i+=4,j++){
 		res[j] = ordat(msg,i) | ordat(msg,i+1) << 8| ordat(msg , i+2) << 16| ordat(msg,i+3) << 24;
-		printf("%d %d %d %d %d\n",ordat(msg,i),ordat(msg,i+1) << 8,ordat(msg , i+2) << 16,ordat(msg,i+3) << 24,res[j]);
+//		printf("%d %d %d %d %d\n",ordat(msg,i),ordat(msg,i+1) << 8,ordat(msg , i+2) << 16,ordat(msg,i+3) << 24,res[j]);
 	}
 	if(key)
 		res[j]=l;
@@ -45,8 +44,8 @@ int get_xencode(char * msg, char * key,char * res){
 	if(strlen(msg)==0)
 		return 0;
 
-	int pwd[256] = {0};
-	int pwdk[256] = {0};
+	unsigned long int pwd[256] = {0};
+	unsigned long int pwdk[256] = {0};
 	
 	int lpwd = sencode(msg , 1 ,  pwd) + 1;
 	int lpwdk = sencode(key , 0 , pwdk) + 1;
@@ -55,16 +54,16 @@ int get_xencode(char * msg, char * key,char * res){
 		lpwdk = 4;
 	
 	int n =lpwd - 1;
-	printf("%d\n", n);
-	int z = pwd[n];
-	int y = pwd[0];
+//	printf("%d\n", n);
+	unsigned long int z = pwd[n];
+	unsigned long int y = pwd[0];
 //	printf("y:%d\n",y);
 	int c = 0x86014019 | 0x183639A0;
-	int m = 0;
-	int e = 0;
-	int p = 0;
-	int q = (int)floor(6+52/(n-1));
-	int d = 0;
+	unsigned long int m = 0;
+	unsigned long int e = 0;
+	unsigned long int p = 0;
+	unsigned long int q = (int)floor(6+52/(n-1));
+	unsigned long int d = 0;
 
 	while(0 < q){
 		d = d + c & (0x8ce0d9bf | 0x731f2640);
@@ -75,19 +74,21 @@ int get_xencode(char * msg, char * key,char * res){
 		while(p < n){
 			y = pwd[p+1];
 			m = (z >> 5 ^ y << 2 );
-		//	printf("%d,%d,%ld\n",z,y,m);
+//			printf("%lu,%lu,%lu\n",z,y,m);
 			m = m +(( y >> 3 ^ z << 4 ) ^ ( d ^ y ));
+//			printf("%lu,%lu,%lu\n",z,y,m);
 			m = m +(pwdk[p&3^e] ^ z);
-			pwd[p] = pwd[p]+((int)m) & (0xEFB8D130 | 0x10472FCF);
+			printf("%lu,%lu,%lu\n",z,y,m);
+			pwd[p] = pwd[p]+m & (0xEFB8D130 | 0x10472FCF);
 			z = pwd[p];
 			p = p + 1;
 		}
 		y = pwd[0];
 		m = (z >> 5 ^ y << 2 );
-		printf("%lf\n",m);
+	//	printf("%lf\n",m);
 		m = m +(( y >> 3 ^ z << 4 ) ^ ( d ^ y ));
-		m = m +(pwdk[p&3^e] ^ z);
-		pwd[n] = pwd[n]+((int)m) & (0xBB290742 | 0x44C6F8BD);
+		m = m +(pwdk[p & 3 ^e] ^ z);
+		pwd[n] = pwd[n]+m & (0xBB390742 | 0x44C6F8BD);
 		z = pwd[n];
 		q = q - 1; 
 	}	
