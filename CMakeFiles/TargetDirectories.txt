@@ -1,4 +1,0 @@
-/home/whywhywhy/workspace/Net_Auth/CMakeFiles/edit_cache.dir
-/home/whywhywhy/workspace/Net_Auth/CMakeFiles/rebuild_cache.dir
-/home/whywhywhy/workspace/Net_Auth/src/CMakeFiles/edit_cache.dir
-/home/whywhywhy/workspace/Net_Auth/src/CMakeFiles/rebuild_cache.dir
