@@ -16,7 +16,6 @@ int sencode(char *msg,int key,unsigned long int *res){
 	int i,j;
 	for(i = 0 ,j = 0 ; i < l ; i+=4,j++){
 		res[j] = ordat(msg,i) | ordat(msg,i+1) << 8| ordat(msg , i+2) << 16| ordat(msg,i+3) << 24;
-//		printf("%d %d %d %d %d\n",ordat(msg,i),ordat(msg,i+1) << 8,ordat(msg , i+2) << 16,ordat(msg,i+3) << 24,res[j]);
 	}
 	if(key)
 		res[j]=l;
@@ -37,7 +36,7 @@ int lencode(unsigned long int * msg,int l,int key,char *res){
 		sprintf(tmp,"%c%c%c%c",(msg[i] & 0xff) ,(msg[i] >> 8 & 0xff ) , (msg[i] >> 16 & 0xff) ,(msg[i] >> 24 & 0xff));
 		strcat(res , (const char *)tmp);
 	}
-	return i;
+	return i*4;
 }
 
 int get_xencode(char * msg, char * key,unsigned char * res){
@@ -54,10 +53,8 @@ int get_xencode(char * msg, char * key,unsigned char * res){
 		lpwdk = 4;
 	
 	int n =lpwd - 1;
-//	printf("%d\n", n);
 	unsigned long int z = pwd[n];
 	unsigned long int y = pwd[0];
-//	printf("y:%d\n",y);
 	unsigned long int c = 0x86014019 | 0x183639A0;
 	unsigned long int m = 0;
 	unsigned long int e = 0;
@@ -67,25 +64,19 @@ int get_xencode(char * msg, char * key,unsigned char * res){
 
 	while(0 < q){
 		d = d + c & (0x8ce0d9bf | 0x731f2640);
-		//printf("%ld\n",d);
 		e = d >> 2 & 3;
-		//printf("%ld\n",e);
 		p = 0 ;
 		while(p < n){
 			y = pwd[p+1];
 			m = (z >> 5 ^ y << 2 );
-//			printf("%lu,%lu,%lu\n",z,y,m);
 			m = m +(( y >> 3 ^ z << 4 ) ^ ( d ^ y ));
-//			printf("%lu,%lu,%lu\n",z,y,m);
 			m = m +(pwdk[p&3^e] ^ z);
-			printf("%lu,%lu,%lu\n",z,y,m);
 			pwd[p] = pwd[p]+m & (0xEFB8D130 | 0x10472FCF);
 			z = pwd[p];
 			p = p + 1;
 		}
 		y = pwd[0];
 		m = (z >> 5 ^ y << 2 );
-	//	printf("%lf\n",m);
 		m = m +(( y >> 3 ^ z << 4 ) ^ ( d ^ y ));
 		m = m +(pwdk[p & 3 ^e] ^ z);
 		pwd[n] = pwd[n]+m & (0xBB390742 | 0x44C6F8BD);
@@ -96,7 +87,7 @@ int get_xencode(char * msg, char * key,unsigned char * res){
 
 	lencode(pwd ,lpwd, 0 ,res);
 }
-
+/*
 int main(){
 
 	char * msg="{\"username\":\"201626203044@cmcc\",\"password\":\"15879684798qq\",\"ip\":\"10.128.96.249\",\"acid\":\"1\",\"enc_ver\":\"srun_bx1\"}";
@@ -104,15 +95,12 @@ int main(){
 
 	unsigned char res[256] = {0};
 
-	get_xencode(msg , key ,res);
+	int j = get_xencode(msg , key ,res);
 
-//	printf("%d\n",ordat(msg,2));
-	printf("%s\n",res);
-	for(int i =0 ;i < 256 ; i++){
-		printf("%x\t",res[i]);
-		if(i % 16 == 0){
-			printf("\n");
-		}
+//	printf("%s\n",res);
+	for(int i =0 ;i < j ; i++){
+		printf("%x",res[i]);
 	}
+	printf("\n");
 	return 0;
-}
+}*/

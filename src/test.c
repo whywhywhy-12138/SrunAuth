@@ -1,15 +1,12 @@
 /*一个测试程序*/  
 #include "base64.h"  
-#include <stdio.h> 
-#include <string.h> 
-
 #include "SHA1.h"
 #include "hmac_md5.h"
-
-
+#include "xencode.h"
 
 int main(int argc,char **argv)  
 {  
+
     unsigned char * buf;
     unsigned char digest[20]={0};
     char   * key = "711ab370231392679fe06523b119a8fe096f5ed9bd206b4de8d7b5b994bbc3e5";
