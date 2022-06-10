@@ -1,4 +1,4 @@
-# SrunAuth [![travis-ci]
+# SrunAuth
 
 内江师范新校区网络认证（深澜软件）
 
