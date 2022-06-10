@@ -81,23 +81,14 @@ int main(int argc,char * argv[]){
 
 	encode_info(&user);
 	
-	if(login(host,&user)<0){
+	ret =login(host,&user);
+	if(ret<0){
 		perror("login");
 		return -1;	
-	}
-
-	sleep(3);
-
-	ret = get_ip(host,user.ip);
-	if(ret<0){
-		perror("get_ip");
-		return -1;
-	}else if(ret == 1){
-		printf("Login success!\n");
-		exit(0);
 	}else if(ret == 0){
-		printf("Login filed!\n");
-		exit(0);
+		printf("LoginSuccess!\n");
+	}else if(ret == 1){
+		printf("LoginFild!\n");
 	}
 
 	//printf("name:%s\npwd:%s\nepwd:%s\nchksum:%s\ninfo:%s\nip:%s\ntoken:%s\n",user.name,user.pwd,user.epwd,user.chksum ,user.info, user.ip,user.token);
@@ -237,6 +228,12 @@ int login(char * host , user_info * user){
 		perror("login");
 		return -1;
 	}
+
+	if(strstr(response,"successful"))
+		return 0;
+	else
+		return 1;
+
 //	printf("\n\n%s\n\n%s\n\n",login_url,response);
 
 }
