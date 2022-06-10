@@ -1,4 +1,4 @@
-# SrunAuth [![travis-ci](https://travis-ci.org/mchome/dogcom.svg "Build status")](https://travis-ci.org/mchome/dogcom) [![badge](https://img.shields.io/badge/%20built%20with-%20%E2%9D%A4-ff69b4.svg "build with love")](https://github.com/mchome/dogcom) [![version](https://img.shields.io/badge/stable%20-%20v1.6.2-4dc71f.svg "stable version")](https://github.com/mchome/dogcom/tree/v1.6.2)
+# SrunAuth [![travis-ci]
 
 内江师范新校区网络认证（深澜软件）
 
