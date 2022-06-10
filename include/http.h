@@ -8,6 +8,8 @@
 #include <netinet/in.h>
 #include <unistd.h>
 
+#include "url_parse.h"
+
 typedef struct {
 	int sockfd;
 	int remote_port;

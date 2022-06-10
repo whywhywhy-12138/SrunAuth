@@ -29,6 +29,9 @@ int tcpclient_con(tcpclient * client){
 int httpstr_init(char * result,char * url , char * host){
 	sprintf(result,"GET %s HTTP/1.1\r\n"
 			"Host: %s\r\n"
+			"User-Agent:FFFFFFFFFFFFFFFFFFFFF\r\n"
+			"Accept-Encoding: gzip, deflate\r\n"
+			"Accept: */*\r\n"
 			"Connection: close\r\n\r\n",url,host);
 	return 0;
 }
@@ -61,6 +64,8 @@ int tcpclient_handle(tcpclient * client,char * url,char * response){
 int http_get(char * host,char *url,char * response){
 
 	tcpclient client;
+	
+
 	if(tcpclient_init(&client,host,80)<0){
 		perror("client_init");
 		return -1;

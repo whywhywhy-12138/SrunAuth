@@ -59,7 +59,7 @@ int get_xencode(char * msg, char * key,unsigned char * res){
 	unsigned long int m = 0;
 	unsigned long int e = 0;
 	unsigned long int p = 0;
-	unsigned long int q = (unsigned long int)floor(6+52/(n-1));
+	unsigned long int q = (unsigned long int)floor(6+52/(n+1));
 	unsigned long int d = 0;
 
 	while(0 < q){
