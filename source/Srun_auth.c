@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 #include "base64.h"
 #include "hmac_md5.h"
@@ -29,18 +30,44 @@ int get_token(char * host , user_info * user);
 int encode_info(user_info * user);
 int login(char * host,user_info * user);
 
-int main(){
+int main(int argc,char * argv[]){
 
 	user_info user={0};
 
 	char * host = "10.30.4.3";
+	int ret;
 
-	strcpy(user.name,"123456789456@xuesheng");
-	strcpy(user.pwd,"123456");
+	char opt;
+	char *optstring = "u:p:m:";
 
-	if(get_ip(host,user.ip)<0){
+	if(argc < 5){
+		printf("usage: %s -u username -p password [-m mode]\n",argv[0]);
+		return -1;
+	}
+
+	while((opt = getopt(argc ,argv , optstring)) != -1){
+		switch(opt){
+			case 'u':
+				strcpy(user.name,optarg);
+				break;
+			case 'p':
+				strcpy(user.pwd,optarg);
+				break;
+			case 'm':
+				break;
+		}
+	}
+	
+	printf("name:%s\npassword:%s\n",user.name,user.pwd);
+
+
+	ret = get_ip(host,user.ip);
+	if(ret<0){
 		perror("get_ip");
 		return -1;
+	}else if(ret == 1){
+		printf("Already online!\n");
+		exit(0);
 	}
 		
 	if(get_token(host,&user)<0){
@@ -55,7 +82,21 @@ int main(){
 		return -1;	
 	}
 
-	printf("name:%s\npwd:%s\nepwd:%s\nchksum:%s\ninfo:%s\nip:%s\ntoken:%s\n",user.name,user.pwd,user.epwd,user.chksum ,user.info, user.ip,user.token);
+	sleep(3);
+
+	ret = get_ip(host,user.ip);
+	if(ret<0){
+		perror("get_ip");
+		return -1;
+	}else if(ret == 1){
+		printf("Login success!\n");
+		exit(0);
+	}else if(ret == 0){
+		printf("Login filed!\n");
+		exit(0);
+	}
+
+	//printf("name:%s\npwd:%s\nepwd:%s\nchksum:%s\ninfo:%s\nip:%s\ntoken:%s\n",user.name,user.pwd,user.epwd,user.chksum ,user.info, user.ip,user.token);
 	return 0;
 }
 
@@ -74,8 +115,7 @@ int get_ip(char * host , char * ip){
 	const char * reg = "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+";
 	
 	if(!strstr(response , not_online)){
-		printf("Already Online!\n");
-		exit(0);
+		return 1;
 	}
 
 	if(getMatch(reg , response , ip)<0){
@@ -99,12 +139,12 @@ int get_token(char * host , user_info * user){
 	char tmp[128]="";
 
 	strcpy(tmp , user->name);
-	printf("%s\n\n",tmp);
+	//printf("%s\n\n",tmp);
 	urlencode(tmp);
 
 	sprintf(tokenurl,"/cgi-bin/get_challenge?username=%s&ip=%s&callback=jQuery112405889573243661126_1654760393331&_=%ld",tmp,user->ip,s.tv_sec * 1000 +s.tv_usec/1000);
 	
-	printf("%s\n\n\n\n",tokenurl);
+	//printf("%s\n\n\n\n",tokenurl);
 	if(http_get(host , tokenurl , response)<0){
 		perror("TokenGet");
 		return -1;
@@ -128,9 +168,13 @@ int encode_info(user_info * user){
 		   "\"ip\":\"%s\","
 		   "\"acid\":\"4\",\"enc_ver\":\"srun_bx1\"}",user->name,user->pwd,user->ip);
 	
+	
 	get_xencode(tmp,user->token,tmp1);
+	//printf("\t%s\n\n\t%s\n\n",tmp,user->token);
+
 	strcat(user->info, "{SRBX1}");
 	strcat(user->info, base64_encode(tmp1));
+	
 
 	memset(tmp,0,sizeof(tmp));
 	memset(tmp1,0,sizeof(tmp1));
@@ -179,16 +223,17 @@ int login(char * host , user_info * user){
 	struct timeval s;
 	gettimeofday(&s,NULL);
 	
-	printf("%%7B%s\n\n",tempinfo);
+	//printf("%%7B%s\n\n",tempinfo);
+
 
 	sprintf(login_url,auth_url_data,tempname,user->epwd,user->chksum,tempinfo,user->ip,s.tv_sec * 1000 +s.tv_usec/100);
 
-	printf("%s\n\n",login_url);
+	//printf("%s\n\n",login_url);
 	if(http_get(host,login_url,response)<0){
 		perror("login");
 		return -1;
 	}
-	printf("\n\n%s\n\n%s\n\n",login_url,response);
+	//printf("\n\n%s\n\n%s\n\n",login_url,response);
 
 }
 
