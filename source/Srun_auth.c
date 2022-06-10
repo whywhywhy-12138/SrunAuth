@@ -57,9 +57,13 @@ int main(int argc,char * argv[]){
 				break;
 		}
 	}
+
+	if(strlen(user.name)==0||strlen(user.pwd)==0){
+		printf("input error\n");
+		return -1;
+	}
 	
 	printf("name:%s\npassword:%s\n",user.name,user.pwd);
-
 
 	ret = get_ip(host,user.ip);
 	if(ret<0){
@@ -233,7 +237,7 @@ int login(char * host , user_info * user){
 		perror("login");
 		return -1;
 	}
-	//printf("\n\n%s\n\n%s\n\n",login_url,response);
+//	printf("\n\n%s\n\n%s\n\n",login_url,response);
 
 }
 
